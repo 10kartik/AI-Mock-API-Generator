@@ -1,8 +1,7 @@
-const cachedResponses = require("./cachedResponse");
-const sampleOpenAPI = require("./sampleOpenApiSpec.json");
 const promptStrings = require("./promptStrings");
-const { callCompletionAPI, askAllRoutesListAPI } = require("./aiService");
+const { callCompletionAPI } = require("./aiService");
 const { readJSONFilesInFolder } = require("./readJSONFiles");
+let { fileContentMap, cachedResponse, pathsMap } = require("./localStorage");
 
 async function simulateResponse(
   originalUrl,
@@ -10,14 +9,19 @@ async function simulateResponse(
   openApiSpecFolderPath,
   specificResponseMap = {}
 ) {
-
   const routeKey = method + " " + originalUrl;
   const responseIdentifier = "default";
   console.log("Route key:", routeKey);
 
   console.log("Open API Spec folder path:", openApiSpecFolderPath);
-  let fileContentMap = await readJSONFilesInFolder(openApiSpecFolderPath);
+  fileContentMap = await readJSONFilesInFolder(openApiSpecFolderPath);
+
+  console.log("File content:", fileContentMap);
+
   // Set paths from Open API Spec to pathsMap
+  pathsMap = setPathsFromOpenApiSpec(fileContentMap);
+
+  console.log("Paths map:", pathsMap);
 
   if (specificResponseMap) {
     // TODO: Build response identifier accordingly.
@@ -26,55 +30,53 @@ async function simulateResponse(
   let dynamicResponse;
 
   // Check response for given route in the in-memory cache, if exists return it, else continue
-  if (cachedResponses[routeKey]) {
-    // TODO: Remove ! after implementing the cache
-    // return cachedResponses[routeKey][responseIdentifier];
+  if (cachedResponse[routeKey]) {
+    return cachedResponse[routeKey][responseIdentifier];
   } else {
-    // TODO: prepare prompt for GPT-3.5
-    let totalFileContent = "";
+    // prepare prompt for GPT-3.5
+    let fileContent = fileContentMap[pathsMap[routeKey]];
 
-    for (const [fileName, fileContent] of Object.entries(fileContentMap)) {
-      totalFileContent += `openApiSample3.json:\n"${JSON.stringify(sampleOpenAPI)}"\n\n`;
-    }
+    let prompt =
+      fileContent + "\n" + promptStrings.askApiResponsePrompt(originalUrl);
 
-    let prompt = totalFileContent + "\n" + promptStrings.askApiResponsePrompt(originalUrl);
-
-    console.log("Prompt:===", prompt);
+    console.log("Prompt:=========\n", prompt);
 
     // Call GPT-3.5 to get the response for given route
-    dynamicResponse = await callCompletionAPI(prompt);
-    // TODO: Handle case when GPT-3.5 returns error
+    try {
+      dynamicResponse = await callCompletionAPI(prompt);
+    } catch (error) {
+      // Handle case when GPT-3.5 returns error
+      return error.toString();
+    }
 
-    // TODO: Store response from GPT in the in-memory cache
+    console.log("Dynamic response:", dynamicResponse);
+    // Store response from GPT in the in-memory cache
+    if (!cachedResponse[routeKey]) {
+      cachedResponse[routeKey] = {};
+      cachedResponse[routeKey][responseIdentifier] = dynamicResponse;
+    }
   }
 
-  // return dynamic response to the caller
-  if (dynamicResponse) {
-    return dynamicResponse;
-  } else {
-    // TODO: Ask GPT to ask info for all given routes and cache the response.
-    const prompt =
-      JSON.stringify("Hey?") +
-      "\n\n" +
-      promptStrings.askAllRoutesListPrompt;
-
-    return {
-      message: `Path not found: ${originalUrl}`,
-      "available routes": dynamicResponse,
-    };
-    // Not Found if no sample response is defined
-  }
+  return dynamicResponse;
 }
 
 function setPathsFromOpenApiSpec(fileContentMap) {
   const pathsMap = {};
 
   for (const [fileName, fileContent] of Object.entries(fileContentMap)) {
+    console.log("File name:", fileName);
     const fileContentJson = JSON.parse(fileContent);
     const paths = fileContentJson.paths;
 
-    for (const [path, pathContent] of Object.entries(paths)) {
-      pathsMap[path] = pathContent;
+    for (const path in paths) {
+      const methods = paths[path];
+
+      for (method in methods) {
+        route = path.split("?");
+        const key = `${method.toUpperCase()} ${route}`;
+
+        pathsMap[key] = fileName;
+      }
     }
   }
 
