@@ -47,15 +47,11 @@ async function startServer() {
 
   app.use(
     OpenApiValidator.middleware({
-      apiSpec: "merged_openapi.json",
-      validateRequests: false, // (default)
+      apiSpec: "./merged_openapi.json",
+      validateRequests: true, // (default)
       validateResponses: false, // false by default
     })
   );
-
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
 
   app.use((err, req, res, next) => {
     // format error
@@ -82,6 +78,11 @@ async function startServer() {
     );
     res.status(200).send(resp);
   });
+
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+
 }
 
 startServer();

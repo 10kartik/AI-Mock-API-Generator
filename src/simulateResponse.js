@@ -49,7 +49,6 @@ async function simulateResponse(
       return error.toString();
     }
 
-    console.log("Dynamic response:", dynamicResponse);
     // Store response from GPT in the in-memory cache
     if (!cachedResponse[routeKey]) {
       cachedResponse[routeKey] = {};
