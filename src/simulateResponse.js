@@ -1,5 +1,5 @@
 const cachedResponses = require("./cachedResponse");
-// const sampleOpenAPI = require("./sampleOpenApiSpec.json");
+const sampleOpenAPI = require("./sampleOpenApiSpec.json");
 const promptStrings = require("./promptStrings");
 const { callCompletionAPI, askAllRoutesListAPI } = require("./aiService");
 const { readJSONFilesInFolder } = require("./readJSONFiles");
@@ -19,8 +19,6 @@ async function simulateResponse(
   let fileContentMap = await readJSONFilesInFolder(openApiSpecFolderPath);
   // Set paths from Open API Spec to pathsMap
 
-  console.log("File content:", fileContentMap);
-
   if (specificResponseMap) {
     // TODO: Build response identifier accordingly.
   }
@@ -36,10 +34,10 @@ async function simulateResponse(
     let totalFileContent = "";
 
     for (const [fileName, fileContent] of Object.entries(fileContentMap)) {
-      totalFileContent += `${fileName}\n${fileContent}\n\n`;
+      totalFileContent += `openApiSample3.json:\n"${JSON.stringify(sampleOpenAPI)}"\n\n`;
     }
 
-    let prompt = promptStrings.askApiResponsePrompt(originalUrl) + "\n\n" + totalFileContent;
+    let prompt = totalFileContent + "\n" + promptStrings.askApiResponsePrompt(originalUrl);
 
     console.log("Prompt:===", prompt);
 

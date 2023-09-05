@@ -13,8 +13,7 @@ async function callCompletionAPI(prompt) {
     model: "gpt-3.5-turbo-16k",
   });
 
-  console.log(completion.choices[0].message.content);
-  console.log(JSON.parse(completion.choices[0].message.content));
+  console.log("---------AI parsed response ----------- \n", JSON.parse(completion.choices[0].message.content));
   return JSON.parse(completion.choices[0].message.content);
 }
 

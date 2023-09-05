@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 const simulateResponse = require("./simulateResponse");
 const commander = require("commander");
+const OpenApiValidator = require('express-openapi-validator');
 
 const program = new commander.Command();
 
@@ -37,6 +38,21 @@ app.use((req, res, next) => {
   console.log("Request route:", req.originalUrl);
 
   next();
+});
+
+app.use(
+  OpenApiValidator.middleware({
+    apiSpec: '../openapi.json',
+    validateRequests: true, // (default)
+    validateResponses: true, // false by default
+  }),
+);
+app.use((err, req, res, next) => {
+  // format error
+  res.status(err.status || 500).json({
+    message: err.message,
+    errors: err.errors,
+  });
 });
 
 app.get("/*", async function (req, res) {
