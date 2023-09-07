@@ -11,9 +11,13 @@ async function mergeOpenAPIFiles(folderPath) {
 
   // Iterate through each file in the folder
   for (const fileName of fileNames) {
+    const fileExt = path.extname(fileName);    
+    if(fileExt !== '.json') {
+      continue
+    }
     // Construct the full file path
     const filePath = path.join(folderPath, fileName);
-
+    
     // Read the JSON file and parse it into an object
     const fileData = fs.readFileSync(filePath, "utf8");
     const openAPIObject = JSON.parse(fileData);
