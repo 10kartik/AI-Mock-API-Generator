@@ -1,7 +1,6 @@
 const promptStrings = require("./promptStrings");
 const { callCompletionAPI } = require("./aiService");
-const { readJSONFilesInFolder } = require("./readJSONFiles");
-let { fileContentMap, cachedResponse, pathsMap } = require("./localStorage");
+let localDataStoreObject = require("./localStorage");
 
 async function simulateResponse(
   originalUrl,
@@ -9,19 +8,16 @@ async function simulateResponse(
   openApiSpecFolderPath,
   specificResponseMap = {}
 ) {
-  const routeKey = method + " " + originalUrl;
+  const aiInputRoute = originalUrl.split("?")[0];
+  const routeKey = method + " " + aiInputRoute;
   const responseIdentifier = "default";
   console.log("Route key:", routeKey);
 
   console.log("Open API Spec folder path:", openApiSpecFolderPath);
-  fileContentMap = await readJSONFilesInFolder(openApiSpecFolderPath);
 
-  console.log("File content:", fileContentMap);
+  console.log("File contents by name Map:", localDataStoreObject.getFileContentByFileNameMap);
 
-  // Set paths from Open API Spec to pathsMap
-  pathsMap = setPathsFromOpenApiSpec(fileContentMap);
-
-  console.log("Paths map:", pathsMap);
+  console.log("Paths map:", localDataStoreObject.getPathsMap);
 
   if (specificResponseMap) {
     // TODO: Build response identifier accordingly.
@@ -30,39 +26,53 @@ async function simulateResponse(
   let dynamicResponse;
 
   // Check response for given route in the in-memory cache, if exists return it, else continue
-  if (cachedResponse[routeKey]) {
-    return cachedResponse[routeKey][responseIdentifier];
-  } else {
-    // prepare prompt for GPT-3.5
-    let fileContent = fileContentMap[pathsMap[routeKey]];
-
-    let prompt =
-      fileContent + "\n" + promptStrings.askApiResponsePrompt(originalUrl);
-
-    console.log("Prompt:=========\n", prompt);
-
-    // Call GPT-3.5 to get the response for given route
-    try {
-      dynamicResponse = await callCompletionAPI(prompt);
-    } catch (error) {
-      // Handle case when GPT-3.5 returns error
-      return error.toString();
-    }
-
-    // Store response from GPT in the in-memory cache
-    if (!cachedResponse[routeKey]) {
-      cachedResponse[routeKey] = {};
-      cachedResponse[routeKey][responseIdentifier] = dynamicResponse;
-    }
+  if (
+    localDataStoreObject.getCachedResponse[routeKey] &&
+    localDataStoreObject.getCachedResponse[routeKey][responseIdentifier]
+  ) {
+    return localDataStoreObject.getCachedResponse[routeKey][responseIdentifier];
   }
 
+  // prepare prompt for GPT-3.5
+  let fileContent =
+    localDataStoreObject.getFileContentByFileNameMap[
+      localDataStoreObject.pathsMap[routeKey]
+    ];
+
+  let prompt =
+    fileContent +
+    "\n" +
+    localDataStoreObject.mergedOpenAPI.components +
+    promptStrings.askApiResponsePrompt(originalUrl);
+
+  console.log("Prompt:=========\n", prompt);
+
+  // Call GPT-3.5 to get the response for given route
+  try {
+    dynamicResponse = await callCompletionAPI(prompt);
+  } catch (error) {
+    // Handle case when GPT-3.5 returns error
+    return error.toString();
+  }
+
+  // Store response from GPT in the in-memory cache
+  if (!localDataStoreObject.getCachedResponse[routeKey]) {
+    localDataStoreObject.getCachedResponse[routeKey] = {};
+    localDataStoreObject.getCachedResponse[routeKey][responseIdentifier] =
+      dynamicResponse;
+  } else {
+    localDataStoreObject.getCachedResponse[routeKey][responseIdentifier] =
+      dynamicResponse;
+  }
   return dynamicResponse;
 }
 
-function setPathsFromOpenApiSpec(fileContentMap) {
+async function setPathsFromOpenApiSpec(fileContentByFileNameMap) {
   const pathsMap = {};
 
-  for (const [fileName, fileContent] of Object.entries(fileContentMap)) {
+  for (const [fileName, fileContent] of Object.entries(
+    fileContentByFileNameMap
+  )) {
     console.log("File name:", fileName);
     const fileContentJson = JSON.parse(fileContent);
     const paths = fileContentJson.paths;
@@ -70,7 +80,7 @@ function setPathsFromOpenApiSpec(fileContentMap) {
     for (const path in paths) {
       const methods = paths[path];
 
-      for (method in methods) {        
+      for (const method in methods) {
         const key = `${method.toUpperCase()} ${path}`;
 
         pathsMap[key] = fileName;
@@ -81,4 +91,4 @@ function setPathsFromOpenApiSpec(fileContentMap) {
   return pathsMap;
 }
 
-module.exports = simulateResponse;
+module.exports = { simulateResponse, setPathsFromOpenApiSpec };

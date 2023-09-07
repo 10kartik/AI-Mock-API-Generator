@@ -1,9 +1,14 @@
 const express = require("express");
 const port = 3000;
-const simulateResponse = require("./simulateResponse");
+const {
+  simulateResponse,
+  setPathsFromOpenApiSpec,
+} = require("./simulateResponse");
 const commander = require("commander");
 const OpenApiValidator = require("express-openapi-validator");
 const { mergeOpenAPIFiles } = require("./mergeOpenApi");
+const { readJSONFilesInFolder } = require("./readJSONFiles");
+let localDataStoreObject = require("./localStorage");
 
 const program = new commander.Command();
 
@@ -26,6 +31,21 @@ if (!options.openApiSpecificationFolderPath) {
 
 async function performInitializationTasks() {
   await mergeOpenAPIFiles(options.openApiSpecificationFolderPath);
+
+  localDataStoreObject.setFileContentByFileNameMap =
+    await readJSONFilesInFolder(options.openApiSpecificationFolderPath);
+
+  console.log(
+    "File content map:",
+    localDataStoreObject.getFileContentByFileNameMap
+  );
+
+  // Set paths from Open API Spec to pathsMap
+  localDataStoreObject.setPathsMap = await setPathsFromOpenApiSpec(
+    localDataStoreObject.getFileContentByFileNameMap
+  );
+
+  console.log("Paths map:", localDataStoreObject.getPathsMap);
 }
 
 async function startServer() {
@@ -56,7 +76,11 @@ async function startServer() {
   app.use((err, req, res, next) => {
     // format error
     res.status(err.status || 500).json({
-      message: err.message,
+      message:
+        "Request route mismatch or One or more parameters are missing or invalid." +
+        " List of Valid Routes:[" +
+        Object.keys(localDataStoreObject.getPathsMap).join(", ") +
+        "]",
       errors: err.errors,
     });
   });
@@ -79,10 +103,19 @@ async function startServer() {
     res.status(200).send(resp);
   });
 
+
+  app.delete("/*", async function (req, res) {
+    const resp = await simulateResponse(
+      req.originalUrl,
+      "DELETE",
+      options.openApiSpecificationFolderPath
+    );
+    res.status(200).send(resp);
+  });
+
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
-
 }
 
 startServer();

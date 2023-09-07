@@ -5,15 +5,15 @@ const path = require("path");
 async function readJSONFilesInFolder(folderPath) {
   try {
     const files = await fs.readdir(folderPath);
-    const fileContents = {};
+    const fileContentsByFileNameMap = {};
 
     for (const file of files) {
       const filePath = path.join(folderPath, file);
       const data = await fs.readFile(filePath, "utf8");
-      fileContents[file] = data;
+      fileContentsByFileNameMap[file] = data;
     }
 
-    return fileContents;
+    return fileContentsByFileNameMap;
   } catch (error) {
     console.error("Error reading folder:", error);
     throw error; // You may want to handle this error at a higher level

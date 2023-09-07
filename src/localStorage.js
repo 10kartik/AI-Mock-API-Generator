@@ -1,22 +1,52 @@
-// Map to store mock responses from AI for each route
-let cachedResponse = {}; // Key: routeKey (GET /v1/accounts)["default"], Value: mock response
+class LocalDataStore {
+  constructor() {
+    this.cachedResponse = {};
+    this.mergedOpenAPI = {
+      openapi: "3.0.3",
+      info: {},
+      servers: [],
+      paths: {},
+      components: {},
+    };
+    this.fileContentByFileNameMap = {};
+    this.pathsMap = {};
+  }
 
-let mergedOpenAPI = {
-  openapi: "3.0.3", // Update this with your desired version
-  info: {
-    // Add your info here
-  },
-  servers: [],
-  paths: {},
-  components: {
-    // Add your components here
-  },
-};
+  // Getter and Setter for cachedResponse
+  get getCachedResponse() {
+    return this.cachedResponse;
+  }
 
-// Map to store file content of each OpenAPI spec file
-let fileContentMap = {}; // Key: file name, Value: file content
+  set setCachedResponse(data) {
+    this.cachedResponse = data;
+  }
 
-// Map to store paths from OpenAPI spec
-let pathsMap = {}; // Key: routeKey (GET /v1/accounts), Value: file name
+  // Getter and Setter for mergedOpenAPI
+  get getMergedOpenAPI() {
+    return this.mergedOpenAPI;
+  }
 
-module.exports = { cachedResponse, mergedOpenAPI, fileContentMap, pathsMap };
+  set setMergedOpenAPI(data) {
+    this.mergedOpenAPI = data;
+  }
+
+  // Getter and Setter for fileContentByFileNameMap
+  get getFileContentByFileNameMap() {
+    return this.fileContentByFileNameMap;
+  }
+
+  set setFileContentByFileNameMap(data) {
+    this.fileContentByFileNameMap = data;
+  }
+
+  // Getter and Setter for pathsMap
+  get getPathsMap() {
+    return this.pathsMap;
+  }
+
+  set setPathsMap(data) {
+    this.pathsMap = data;
+  }
+}
+
+module.exports = new LocalDataStore();

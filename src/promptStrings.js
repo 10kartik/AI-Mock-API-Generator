@@ -1,8 +1,8 @@
-const askApiResponsePrompt = (route) => 
-  `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec file.`+ 
-  `Ensure it's valid JSON and includes all attributes.` +  
-  `If an attribute is an array, include 1 to 3 elements.` + 
-  `Generate a random "id" whanever present in any entity.` + 
+const askApiResponsePrompt = (route) =>
+  `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec file "openApiSample3.json".` +
+  `Note: Provide response in JSON Only. Ensure it's valid JSON and includes all attributes.` +
+  `If an attribute is an array, include 1 to 3 elements.` +
+  `Generate a random "id" whanever present in any entity.` +
   `If there is any query param given, use its value to generate response.` +
   `Please map the relavent entities correctly in response.` +
   `Do not include any informative text or suggestions, statements like "Understood, "," Certainly,","In this mock response" etc, Reply with only JSON response.`;
@@ -20,7 +20,7 @@ const askApiResponsePrompt = (route) =>
 //   '" api specification';
 
 const askAllRoutesListPrompt =
-  'Please give me a list of available APIs. and wrap them in an array and make sure you return only an array Do not include any' +
+  "Please give me a list of available APIs. and wrap them in an array and make sure you return only an array Do not include any" +
   'informative text or suggestions, like "Understood, "," Certainly, here is the list of available APIs in an array format:" etc.' +
   'such that I can use "available APIs in an array format" directly into the code. Please neglect any past information.';
 

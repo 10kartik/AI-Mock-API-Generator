@@ -1,4 +1,3 @@
-const { json } = require("express");
 const OpenAI = require("openai");
 
 const apiKey = process.env.OPENAI_API_KEY; //organisation's personal account key
