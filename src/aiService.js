@@ -1,4 +1,5 @@
 const OpenAI = require("openai");
+const {askApiResponsePromptSystem} = require("./promptStrings");
 
 const apiKey = process.env.OPENAI_API_KEY; //organisation's personal account key
 
@@ -9,7 +10,10 @@ const openai = new OpenAI({
 async function callCompletionAPI(prompt) {
   try {
     const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
+      messages: [
+        { role: "system", content: askApiResponsePromptSystem },
+        { role: "user", content: prompt }
+      ],
       model: "gpt-3.5-turbo-16k",
     });
 

@@ -1,11 +1,23 @@
+// const askApiResponsePrompt = (route) =>
+//   `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec.` +
+//   `Note: Provide response in JSON Only. Ensure it's valid JSON and includes all attributes.` +
+//   `If an attribute is an array, include 5 to 10 elements.` +
+//   `Generate a random "id" whanever present in any entity. Give real life human readable and unique strings` +
+//   `If there is any query param given, use its value to generate response.` +
+//   `Please map the relavent entities correctly in response.` +
+//   `response json should be as per relavent OpenAPI spec provided in .` ;
+
 const askApiResponsePrompt = (route) =>
-  `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec file "openApiSample3.json".` +
-  `Note: Provide response in JSON Only. Ensure it's valid JSON and includes all attributes.` +
-  `If an attribute is an array, include 1 to 3 elements.` +
-  `Generate a random "id" whanever present in any entity.` +
-  `If there is any query param given, use its value to generate response.` +
-  `Please map the relavent entities correctly in response.` +
-  `Do not include any informative text or suggestions, statements like "Understood, "," Certainly,","In this mock response" etc, Reply with only JSON response.`;
+  `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec.`;
+
+const askApiResponsePromptSystem =
+  `You have to act as a backend server that will generate mock data and response in JSON format.` + 
+  `Your job is not to validate request route and its parameters. You are not expected to return error.` + 
+  `Do not include any informative text or suggestions, statements like "Understood, "," Certainly,","In this mock response" etc, Reply with only JSON response.`+
+  `You will be given OpenAPI specification to understand api response format.` + 
+  `Do not repeat values in response. Try to generate human readable and random values in mock response.`+
+  `If an attribute is an array, include 5 to 10 elements for it.` +
+  `If you have difficulty to response, please do not make up response yourself, instead return { http_code: 400, message: "Something Went Wrong", internal_error_identifier: 'a_s_1'} in JSON format `
 
 // const askApiResponsePrompt = (route) =>
 //   'Using the above OpenAPI spec, please create a sample response for the "' + route + '" endpoint.' +
@@ -19,9 +31,4 @@ const askApiResponsePrompt = (route) =>
 //   route +
 //   '" api specification';
 
-const askAllRoutesListPrompt =
-  "Please give me a list of available APIs. and wrap them in an array and make sure you return only an array Do not include any" +
-  'informative text or suggestions, like "Understood, "," Certainly, here is the list of available APIs in an array format:" etc.' +
-  'such that I can use "available APIs in an array format" directly into the code. Please neglect any past information.';
-
-module.exports = { askApiResponsePrompt, askAllRoutesListPrompt };
+module.exports = { askApiResponsePrompt, askApiResponsePromptSystem };

@@ -23,12 +23,12 @@ async function simulateResponse(
   let dynamicResponse;
 
   // Check response for given route in the in-memory cache, if exists return it, else continue
-  if (
-    localDataStoreObject.getCachedResponse[routeKey] &&
-    localDataStoreObject.getCachedResponse[routeKey][responseIdentifier]
-  ) {
-    return localDataStoreObject.getCachedResponse[routeKey][responseIdentifier];
-  }
+  // if (
+  //   localDataStoreObject.getCachedResponse[routeKey] &&
+  //   localDataStoreObject.getCachedResponse[routeKey][responseIdentifier]
+  // ) {
+  //   return localDataStoreObject.getCachedResponse[routeKey][responseIdentifier];
+  // }
 
   // prepare prompt for GPT-3.5
   let fileContent;
@@ -41,8 +41,7 @@ async function simulateResponse(
   let prompt =
     fileContent +
     "\n" +
-    localDataStoreObject.mergedOpenAPI.components +
-    promptStrings.askApiResponsePrompt(originalUrl);
+    promptStrings.askApiResponsePrompt(routeKey);
 
   console.log("Prompt:=========\n", prompt);
 
