@@ -42,7 +42,7 @@ async function simulateResponse(
     fileContent +
     "\n" +
     localDataStoreObject.mergedOpenAPI.components +
-    promptStrings.askApiResponsePrompt(aiInputRoute);
+    promptStrings.askApiResponsePrompt(originalUrl);
 
   console.log("Prompt:=========\n", prompt);
 

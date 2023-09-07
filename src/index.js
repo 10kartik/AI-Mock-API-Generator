@@ -9,6 +9,7 @@ const OpenApiValidator = require("express-openapi-validator");
 const { mergeOpenAPIFiles } = require("./mergeOpenApi");
 const { readJSONFilesInFolder } = require("./readJSONFiles");
 let localDataStoreObject = require("./localStorage");
+require("./aiService");
 
 const program = new commander.Command();
 
