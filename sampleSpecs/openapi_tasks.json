@@ -596,6 +596,117 @@
           }
         }
       }
+    },
+    "/api/v1/demo_error": {
+      "get": {
+        "description": "Api will return list of tasks for accountId",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "Account Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 10
+            }
+          },
+          {
+            "name": "err_id",
+            "in": "query",
+            "description": "Account Id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "err_id1",
+            "in": "query",
+            "description": "Account Id",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "00U1e000003TUB8EAO"
+                      }
+                    },
+                    "task_map_by_id": {
+                      "type": "object",
+                      "properties": {
+                        "00U1e000003TUB8EAO": {
+                          "type": "object",
+                          "properties": null,
+                          "$ref": "#/components/schemas/task"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response_400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response_401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response_404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Something went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response_500"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

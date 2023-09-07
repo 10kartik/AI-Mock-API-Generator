@@ -38,7 +38,9 @@ node src/index.js --open-api-specification-folder-path /path/to/openapi/specs
 
 Set `OPENAI_API_KEY` in the environment process, and provide folder path to OpenAPI specification with flag `--open-api-specification-folder-path` with the path to the folder containing your OpenAPI specs.
 
-The package will read these input values and use the OpenAI key to interact with GPT 3.5 Turbo and provide OpenAPI spec to the AI. The AI will then generate mock responses in JSON format for the provided APIs.
+The package will read these input values, use the OpenAI key to interact with GPT 3.5 Turbo, and provide OpenAPI spec to the AI. The AI will then generate mock responses in JSON format for the provided APIs.
+
+**Note:** As of now package supports JSON formatted API Specification. You can use https://editor.swagger.io/ to make sure your OpenAPI Specification is valid.
 
 ### License
 

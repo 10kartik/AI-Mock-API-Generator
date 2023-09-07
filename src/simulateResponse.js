@@ -41,7 +41,7 @@ async function simulateResponse(
   let prompt =
     fileContent +
     "\n" +
-    promptStrings.askApiResponsePrompt(routeKey);
+    promptStrings.askApiResponsePrompt(method + " " + originalUrl);
 
   console.log("Prompt:=========\n", prompt);
 
