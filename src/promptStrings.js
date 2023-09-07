@@ -1,9 +1,11 @@
 const askApiResponsePrompt = (route) => 
-  `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec file "openApiSample3.json".`+ 
+  `Generate a mock response for the "${route}" endpoint using the above provided OpenAPI spec file.`+ 
   `Ensure it's valid JSON and includes all attributes.` +  
   `If an attribute is an array, include 1 to 3 elements.` + 
-  `Generate a random "id" and do not use any past or previous information.` + 
-  `Consider any relevant parameters when creating the response.`;
+  `Generate a random "id" whanever present in any entity.` + 
+  `If there is any query param given, use its value to generate response.` +
+  `Please map the relavent entities correctly in response.` +
+  `Do not include any informative text or suggestions, statements like "Understood, "," Certainly,","In this mock response" etc, Reply with only JSON response.`;
 
 // const askApiResponsePrompt = (route) =>
 //   'Using the above OpenAPI spec, please create a sample response for the "' + route + '" endpoint.' +

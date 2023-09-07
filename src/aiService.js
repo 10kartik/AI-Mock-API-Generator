@@ -31,6 +31,6 @@ async function callCompletionAPI(prompt) {
     throw error; // You can choose to return a specific error message or object here
   }
 }
-  
+
 
 module.exports = { callCompletionAPI };

@@ -70,9 +70,8 @@ function setPathsFromOpenApiSpec(fileContentMap) {
     for (const path in paths) {
       const methods = paths[path];
 
-      for (method in methods) {
-        route = path.split("?");
-        const key = `${method.toUpperCase()} ${route}`;
+      for (method in methods) {        
+        const key = `${method.toUpperCase()} ${path}`;
 
         pathsMap[key] = fileName;
       }

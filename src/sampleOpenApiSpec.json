@@ -7,11 +7,46 @@
   },
   "servers": [
     {
-      "url": "https://sales.truesparrow.com"
+      "url": "https://sales.truesparrow.com/api"
     }
   ],
+  "components": {
+    "schemas": {
+      "task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00U1e000003TUB8EAO"
+          },
+          "creator_name": {
+            "type": "string",
+            "example": "xyz"
+          },
+          "crm_organization_user_name": {
+            "type": "string",
+            "example": "abc"
+          },
+          "description": {
+            "type": "string",
+            "example": "Complete remaining task"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2019-10-12"
+          },
+          "last_modified_time": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2019-10-12T07:20:50.52Z"
+          }
+        }
+      }
+    }
+  },
   "paths": {
-    "/api/v1/accounts/account_id/tasks": {
+    "/v1/accounts/account_id/tasks": {
       "get": {
         "description": "Api will return list of tasks for accountId",
         "responses": {
@@ -45,7 +80,7 @@
         }
       }
     },
-    "/api/v1/users/current": {
+    "/v1/users/current": {
       "get": {
         "description": "Api will return current user entity",
         "responses": {
@@ -81,7 +116,7 @@
         }
       }
     },
-    "/api/v1/accounts": {
+    "/v1/accounts": {
       "get": {
         "description": "Api will return the list of accounts",
         "parameters": [
@@ -92,17 +127,6 @@
             "required": false,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "count",
-            "in": "query",
-            "description": "Account Search String",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minimum": 1,
-              "maximum": 20
             }
           }
         ],
@@ -167,7 +191,7 @@
         }
       }
     },
-    "/api/v1/accounts/feed": {
+    "/v1/accounts/feed": {
       "get": {
         "description": "Api will return the paginated account feed details",
         "parameters": [
@@ -299,41 +323,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "task": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "00U1e000003TUB8EAO"
-          },
-          "creator_name": {
-            "type": "string",
-            "example": "xyz"
-          },
-          "crm_organization_user_name": {
-            "type": "string",
-            "example": "abc"
-          },
-          "description": {
-            "type": "string",
-            "example": "Complete remaining task"
-          },
-          "due_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2019-10-12"
-          },
-          "last_modified_time": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2019-10-12T07:20:50.52Z"
           }
         }
       }
