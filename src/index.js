@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const port = 3000;
 const {
@@ -10,7 +11,6 @@ const { mergeOpenAPIFiles } = require("./mergeOpenApi");
 const { readJSONFilesInFolder } = require("./readJSONFiles");
 let localDataStoreObject = require("./localStorage");
 require("./aiService");
-
 const program = new commander.Command();
 
 program
@@ -70,7 +70,7 @@ async function startServer() {
     OpenApiValidator.middleware({
       apiSpec: "./merged_openapi.json",
       validateRequests: true, // (default)
-      validateResponses: false, // false by default
+      validateResponses: true, // false by default
     })
   );
 

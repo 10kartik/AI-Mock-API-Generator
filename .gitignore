@@ -68,3 +68,4 @@ npm-debug.log*
 localTests
 shared-local-instance.db
 logs.txt
+merged_openapi.json
