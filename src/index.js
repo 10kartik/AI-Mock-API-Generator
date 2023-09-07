@@ -35,17 +35,17 @@ async function performInitializationTasks() {
   localDataStoreObject.setFileContentByFileNameMap =
     await readJSONFilesInFolder(options.openApiSpecificationFolderPath);
 
-  console.log(
-    "File content map:",
-    localDataStoreObject.getFileContentByFileNameMap
-  );
+  // console.log(
+  //   "File content map:",
+  //   localDataStoreObject.getFileContentByFileNameMap
+  // );
 
   // Set paths from Open API Spec to pathsMap
   localDataStoreObject.setPathsMap = await setPathsFromOpenApiSpec(
     localDataStoreObject.getFileContentByFileNameMap
   );
 
-  console.log("Paths map:", localDataStoreObject.getPathsMap);
+  // console.log("Paths map:", localDataStoreObject.getPathsMap);
 }
 
 async function startServer() {
@@ -102,7 +102,6 @@ async function startServer() {
     );
     res.status(200).send(resp);
   });
-
 
   app.delete("/*", async function (req, res) {
     const resp = await simulateResponse(

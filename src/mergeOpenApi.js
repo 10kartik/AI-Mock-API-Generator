@@ -29,7 +29,6 @@ async function mergeOpenAPIFiles(folderPath) {
     Object.assign(mergedOpenAPI.components, openAPIObject.components);
   }
 
-  console.log("Merged OpenAPI spec:", mergedOpenAPI);
   if(Object.keys(mergedOpenAPI.paths).length == 0) {
     throw Error ("Please make sure you have atleast one valid openAPI specification file in json format under iven folder location.");
   }

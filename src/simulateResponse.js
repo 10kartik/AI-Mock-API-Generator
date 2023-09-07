@@ -9,15 +9,12 @@ async function simulateResponse(
   specificResponseMap = {}
 ) {
   const aiInputRoute = originalUrl.split("?")[0];
-  const routeKey = method + " " + aiInputRoute;
+  let routeKey = method + " " + aiInputRoute;
+
+  routeKey = resolveRoute(routeKey, localDataStoreObject.getPathsMap);
+
   const responseIdentifier = "default";
   console.log("Route key:", routeKey);
-
-  console.log("Open API Spec folder path:", openApiSpecFolderPath);
-
-  console.log("File contents by name Map:", localDataStoreObject.getFileContentByFileNameMap);
-
-  console.log("Paths map:", localDataStoreObject.getPathsMap);
 
   if (specificResponseMap) {
     // TODO: Build response identifier accordingly.
@@ -34,16 +31,18 @@ async function simulateResponse(
   }
 
   // prepare prompt for GPT-3.5
-  let fileContent =
-    localDataStoreObject.getFileContentByFileNameMap[
-      localDataStoreObject.pathsMap[routeKey]
-    ];
+  let fileContent;
+
+  // if aiInputRoute containts
+  fileContent = localDataStoreObject.getFileContentByFileNameMap[
+    localDataStoreObject.pathsMap[routeKey]
+  ];
 
   let prompt =
     fileContent +
     "\n" +
     localDataStoreObject.mergedOpenAPI.components +
-    promptStrings.askApiResponsePrompt(originalUrl);
+    promptStrings.askApiResponsePrompt(aiInputRoute);
 
   console.log("Prompt:=========\n", prompt);
 
@@ -73,7 +72,6 @@ async function setPathsFromOpenApiSpec(fileContentByFileNameMap) {
   for (const [fileName, fileContent] of Object.entries(
     fileContentByFileNameMap
   )) {
-    console.log("File name:", fileName);
     const fileContentJson = JSON.parse(fileContent);
     const paths = fileContentJson.paths;
 
@@ -89,6 +87,51 @@ async function setPathsFromOpenApiSpec(fileContentByFileNameMap) {
   }
 
   return pathsMap;
+}
+
+// Input route: GET /api/v1/users/{userId}/profile
+function resolveRoute(inputRequestRoute, pathsMap) {
+  const inputRouteMethod = inputRequestRoute.split(" ")[0];
+  const inputRoute = inputRequestRoute.split(" ")[1].split("/");
+
+  // Iterate through each route template in the paths map and check if it matches the input route
+  for (const path in pathsMap) {
+    const templateRouteMethod = path.split(" ")[0];
+    const templateRoute = path.split(" ")[1].split("/");
+
+    if (inputRoute.length === templateRoute.length) {
+      let isMatch = true;
+      const resolvedRouteParts = [];
+
+      // Iterate through each part of the route and check if it matches the corresponding part of the template route
+      for (let i = 0; i < templateRoute.length; i++) {
+        if (
+          templateRoute[i].startsWith("{") &&
+          templateRoute[i].endsWith("}")
+        ) {
+          // This part of the route is a parameter, so keep it as is
+          resolvedRouteParts.push(templateRoute[i]);
+        } else if (templateRoute[i] !== inputRoute[i]) {
+          // This part of the route doesn't match, break out of the loop
+          isMatch = false;
+          break;
+        } else if (templateRoute[i] === inputRoute[i]) {
+          // This part of the route matches, so keep it as is
+          resolvedRouteParts.push(templateRoute[i]);
+        }
+      }
+
+      if (isMatch) {
+        // If it's a match, construct and return the resolved route
+        console.log(templateRouteMethod + " " + resolvedRouteParts.join("/"));
+        return inputRouteMethod + " " + resolvedRouteParts.join("/");
+      }
+    }
+  }
+
+  // If no match is found, return the input route as is
+  console.log("No match found for route:", inputRoute);
+  return inputRoute;
 }
 
 module.exports = { simulateResponse, setPathsFromOpenApiSpec };
