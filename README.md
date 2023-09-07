@@ -1,6 +1,7 @@
 # AI-Mock-API-Generator
 
 TrueSparrow Hackathon September 2023
+![alt text](logo.png)
 
 ### AI Mock API Generator
 
