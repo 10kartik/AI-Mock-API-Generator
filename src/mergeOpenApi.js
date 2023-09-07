@@ -30,7 +30,10 @@ async function mergeOpenAPIFiles(folderPath) {
   }
 
   console.log("Merged OpenAPI spec:", mergedOpenAPI);
-
+  if(Object.keys(mergedOpenAPI.paths).length == 0) {
+    throw Error ("Please make sure you have atleast one valid openAPI specification file in json format under iven folder location.");
+  }
+  
   // // Write the merged OpenAPI spec to a JSON file in the current directory
   const outputFilePath = "merged_openapi.json";
   fs.writeFileSync(outputFilePath, JSON.stringify(mergedOpenAPI, null, 2));
