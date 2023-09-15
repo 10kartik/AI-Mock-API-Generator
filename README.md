@@ -2,7 +2,7 @@
 
 ![alt text](logo.png)
 
-<b>TrueSparrow Hackathon September 2023</b>
+<b>TrueSparrow Hackathon September 2023 - The Stellar Showcase Winner</b>
 
 ### AI Mock API Generator
 
