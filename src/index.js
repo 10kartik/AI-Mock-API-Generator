@@ -19,7 +19,6 @@ program
     "--open-api-specification-folder-path <required>",
     "Open API file absolute path"
   )
-  .option("--openAI-Key", "OpenAI Key")
   .parse(process.argv);
 
 // Access the options
@@ -36,17 +35,10 @@ async function performInitializationTasks() {
   localDataStoreObject.setFileContentByFileNameMap =
     await readJSONFilesInFolder(options.openApiSpecificationFolderPath);
 
-  // console.log(
-  //   "File content map:",
-  //   localDataStoreObject.getFileContentByFileNameMap
-  // );
-
   // Set paths from Open API Spec to pathsMap
   localDataStoreObject.setPathsMap = await setPathsFromOpenApiSpec(
     localDataStoreObject.getFileContentByFileNameMap
   );
-
-  // console.log("Paths map:", localDataStoreObject.getPathsMap);
 }
 
 async function startServer() {
@@ -60,7 +52,6 @@ async function startServer() {
   app.use((req, res, next) => {
     req.extractedParams = Object.assign({}, req.params, req.query, req.body); // Extract all parameters
     const fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-    console.log("Full URL:", fullUrl);
     console.log("Request route:", req.originalUrl);
 
     next();
@@ -70,7 +61,7 @@ async function startServer() {
     OpenApiValidator.middleware({
       apiSpec: "./merged_openapi.json",
       validateRequests: true, // (default)
-      validateResponses: true, // false by default
+      validateResponses: false, // false by default
     })
   );
 

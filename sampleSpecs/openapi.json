@@ -1,10 +1,9 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.0.0",
   "info": {
     "title": "Turf Booking API",
     "version": "1.0.0"
   },
-  "servers": [],
   "tags": [
     {
       "name": "admin",
@@ -471,6 +470,5 @@
         }
       }
     }
-  },
-  "components": {}
+  }
 }
