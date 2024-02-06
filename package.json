@@ -1,13 +1,19 @@
 {
   "name": "ai-mock-api-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TrueSparrow Hackathon September 2023",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js --open-api-specification-folder-path ./sampleSpecs"
   },
-  "keywords": [ "API Mocker", "OpenAPI", "Express", "OpenAI", "AI Mock API Generator" ],
+  "keywords": [
+    "API Mocker",
+    "OpenAPI",
+    "Express",
+    "OpenAI",
+    "AI Mock API Generator"
+  ],
   "author": "Kartik Kapgate",
   "license": "MIT",
   "dependencies": {
