@@ -4,10 +4,12 @@
   "description": "TrueSparrow Hackathon September 2023",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js --open-api-specification-folder-path ./sampleSpecs"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [ "API Mocker", "OpenAPI", "Express", "OpenAI", "AI Mock API Generator" ],
+  "author": "Kartik Kapgate",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.5.0",
     "commander": "^11.0.0",
