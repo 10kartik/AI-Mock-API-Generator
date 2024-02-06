@@ -5,6 +5,7 @@ class LocalDataStore {
       openapi: "3.0.3",
       info: {},
       servers: [],
+      tags: [],
       paths: {},
       components: {},
     };
